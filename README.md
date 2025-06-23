@@ -19,4 +19,4 @@ Create an unweighted graph, select a vertex and see the graph's shortest path tr
 * Right clicking on a selcted vertex will unselect it.
 
 ## Examples
-![BFS Tree 2025-06-19 17-58-28 (online-video-cutter com)](https://github.com/user-attachments/assets/6076b855-12f6-4720-902b-297c50ed57c7)
+![Shortest path tree in unweighted graphs 2025-06-23 11-01-12 (online-video-cutter com) (1)](https://github.com/user-attachments/assets/df693932-b6e3-4514-bac9-cdaf649d355c)
