@@ -20,3 +20,5 @@ Create an unweighted graph, select a vertex and see the graph's shortest path tr
 
 ## Examples
 ![Shortest path tree in unweighted graphs 2025-06-23 11-01-12 (online-video-cutter com) (1)](https://github.com/user-attachments/assets/df693932-b6e3-4514-bac9-cdaf649d355c)
+
+![Shortest path tree in unweighted graphs 2025-06-25 11-18-20 (online-video-cutter com)](https://github.com/user-attachments/assets/ef31f7d6-e58d-46a7-8ef9-e48708dfbaca)
