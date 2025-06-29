@@ -32,6 +32,8 @@ EDGE_THICKNESS = 10
 DOUBLE_CLICK_THERSOLD = 0.2 # seconds
 SAFE_DISTANCE_BETWEEN_VERTECIES = 125 # minimum distance between vertecies so they hide each other
 
+MOVEMENT_SHIFT = 30 # how much do the objects on the screen move on each press
+
 # main entry for program
 def main():
 
@@ -102,7 +104,7 @@ def main():
                         if pressed_on_vertex == 0:
                             # create and add a new vertex to the screen
                             new_vertex = graphs.Vertex(chr(ord('@')+len(verteciesObjects)+1))
-                            verteciesObjects.append(graphics.vertexObject(VERTEX_CIRCLE_COLOR, (mouse_position), VERTEX_CIRCLE_RADIUS, new_vertex))
+                            verteciesObjects.append(graphics.vertexObject(VERTEX_CIRCLE_COLOR, (mouse_position), new_vertex))
                             G.add_vertex(new_vertex)
 
                     # update the last time the user pressed the screen as the current time
@@ -121,7 +123,7 @@ def main():
                     for v in verteciesObjects:
                         distance = pygame.Vector2(v.position).distance_to(pygame.Vector2(mouse_position))
                         # user pressed on an existing vertex, run BFS
-                        if distance < v.radius:
+                        if distance < VERTEX_CIRCLE_RADIUS:
                             v.color = SOURCE_VERTEX_CIRCLE_COLOR
                             result = graphs.BFS(G, v.vertexInfo)
                             # paint vertecies in BFS tree (exept source) in green
@@ -143,7 +145,7 @@ def main():
                     for v in verteciesObjects:
                         distance = pygame.Vector2(v.position).distance_to(pygame.Vector2(mouse_position))
                         # user pressed on an existing vertex
-                        if distance < v.radius:
+                        if distance < VERTEX_CIRCLE_RADIUS:
                             # select vertex as a starting point for a new edge
                             if new_edge_start_vertex is None:
                                 new_edge_start_vertex = v
@@ -186,6 +188,20 @@ def main():
                     new_edge_start_vertex = None
                     new_edge_end_vertex = None
 
+                # handling screen movement (technicly we move the objects on the screen)
+                elif event.key is pygame.K_w:
+                    for v in verteciesObjects:
+                        v.position = (v.position[0], v.position[1] - MOVEMENT_SHIFT)
+                elif event.key is pygame.K_s:
+                    for v in verteciesObjects:
+                        v.position = (v.position[0], v.position[1] + MOVEMENT_SHIFT)
+                elif event.key is pygame.K_a:
+                    for v in verteciesObjects:
+                        v.position = (v.position[0] - MOVEMENT_SHIFT, v.position[1])
+                elif event.key is pygame.K_d:
+                    for v in verteciesObjects:
+                        v.position = (v.position[0] + MOVEMENT_SHIFT, v.position[1])
+
             # ---------- End of handling user input ---------- #
 
             # ---------- Rendering ---------- #
@@ -204,7 +220,7 @@ def main():
             # draw vertecies on the main window
             for v in verteciesObjects:
                     # draw circle
-                    pygame.draw.circle(main_window, v.color, v.position, v.radius)  
+                    pygame.draw.circle(main_window, v.color, v.position, VERTEX_CIRCLE_RADIUS)  
                     # draw text inside the circle with the vertex key as value
                     img = font.render(v.vertexInfo.key, True, VERTEX_KEY_TEXT_COLOR)    
                     main_window.blit(img, (v.position[0] - 12.5, v.position[1] - 12.5)) 

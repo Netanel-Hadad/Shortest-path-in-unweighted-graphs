@@ -10,10 +10,9 @@ import math
 class vertexObject:
 
     # create new vertex object
-    def __init__(self, newColor, newPosition, newRadius, vertexInfo):
+    def __init__(self, newColor, newPosition, vertexInfo):
         self.color = newColor
         self.position = newPosition
-        self.radius = newRadius
         self.vertexInfo = vertexInfo
 
 # represent an edge as an arrow on the screen
