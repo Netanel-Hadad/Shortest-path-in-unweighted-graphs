@@ -13,9 +13,21 @@ import string
 import math
 
 TITLE = "Shortest path tree in unweighted graphs"
-MAIN_WINDOW_HEIGHT = 1500 # fixed height
-MAIN_WINDOW_WIDTH = 1000 # fixed width
+MAIN_WINDOW_HEIGHT = 1000 # fixed height
+MAIN_WINDOW_WIDTH = 1500 # fixed width
 MAIN_WINDOW_BACKGROUND_COLOR = (255, 255, 255) # currently white
+
+UI_BAR_HEIGHT = 75
+UI_BAR_COLOR = (128, 128, 128) # currently grey
+UI_BUTTON_COLOR_NOT_PRESSED = (200, 200, 200) # currently light grey
+UI_BUTTON_COLOR_PRESSED = (50, 50, 50)# currently dark grey
+UI_BUTTON_TEXT_COLOR = (50, 50, 50)# currently dark grey
+UI_BUTTON_TEXT_RIGHT_SHIFT = 20
+UI_BUTTON_TEXT_DOWN_SHIFT = 10
+NEW_BUTTON_POSITION = (12.5, 12.5, 125, 50)
+SAVE_BUTTON_POSITION = (160, 12.5, 125, 50)
+LOAD_BUTTON_POSITION = (307.5, 12.5, 125, 50)
+EXIT_BUTTON_POSITION = (1362.5, 12.5, 125, 50)
 
 VERTEX_CIRCLE_RADIUS = 45
 VERTEX_CIRCLE_COLOR = (0, 0, 0) # currently black
@@ -41,7 +53,7 @@ def main():
     
     # setting up the game window
     pygame.init()
-    main_window = pygame.display.set_mode((MAIN_WINDOW_HEIGHT, MAIN_WINDOW_WIDTH))
+    main_window = pygame.display.set_mode((MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT))
     pygame.display.set_caption(TITLE)
 
     # font info
@@ -61,6 +73,19 @@ def main():
     # used for creating new edges
     new_edge_start_vertex =  None
     new_edge_end_vertex = None
+
+    # creating all the buttons in the ui bar
+    newButton = graphics.buttonObject("New", NEW_BUTTON_POSITION, UI_BUTTON_COLOR_NOT_PRESSED)
+    saveButton = graphics.buttonObject("Save", SAVE_BUTTON_POSITION, UI_BUTTON_COLOR_NOT_PRESSED)
+    loadButton = graphics.buttonObject("Load", LOAD_BUTTON_POSITION, UI_BUTTON_COLOR_NOT_PRESSED)
+    exitButton = graphics.buttonObject("Exit", EXIT_BUTTON_POSITION, UI_BUTTON_COLOR_NOT_PRESSED)
+
+    # create and fill the list of all the buttons in the ui bar
+    uiObjects = []
+    uiObjects.append(newButton)
+    uiObjects.append(saveButton)
+    uiObjects.append(loadButton)
+    uiObjects.append(exitButton)
 
     # ---------- program loop ---------- #
     running = True
@@ -88,24 +113,31 @@ def main():
                     # get the time when the user pressed the screen
                     current_time = time.time()
 
-                    # check for a double click
-                    if current_time - last_click_time <= DOUBLE_CLICK_THERSOLD:
+                    # user pressed under the ui bar
+                    if mouse_position[1] > UI_BAR_HEIGHT:
 
-                        pressed_on_vertex = 0 # did the user pressed on a existing vertex
+                        # check for a double click
+                        if current_time - last_click_time <= DOUBLE_CLICK_THERSOLD:
 
-                        # check every vertex on the screen if the user tried to create a new one in its space
-                        for v in verteciesObjects:
-                            distance = pygame.Vector2(v.position).distance_to(pygame.Vector2(mouse_position))
-                            # user pressed too close to an existing vertex
-                            if distance < SAFE_DISTANCE_BETWEEN_VERTECIES:
-                                pressed_on_vertex = 1
+                            pressed_on_vertex = 0 # did the user pressed on a existing vertex
 
-                        # user choose a good place for a new vertex
-                        if pressed_on_vertex == 0:
-                            # create and add a new vertex to the screen
-                            new_vertex = graphs.Vertex(chr(ord('@')+len(verteciesObjects)+1))
-                            verteciesObjects.append(graphics.vertexObject(VERTEX_CIRCLE_COLOR, (mouse_position), new_vertex))
-                            G.add_vertex(new_vertex)
+                            # check every vertex on the screen if the user tried to create a new one in its space
+                            for v in verteciesObjects:
+                                distance = pygame.Vector2(v.position).distance_to(pygame.Vector2(mouse_position))
+                                # user pressed too close to an existing vertex
+                                if distance < SAFE_DISTANCE_BETWEEN_VERTECIES:
+                                    pressed_on_vertex = 1
+
+                            # user choose a good place for a new vertex
+                            if pressed_on_vertex == 0:
+                                # create and add a new vertex to the screen
+                                new_vertex = graphs.Vertex(chr(ord('@')+len(verteciesObjects)+1))
+                                verteciesObjects.append(graphics.vertexObject(VERTEX_CIRCLE_COLOR, (mouse_position), new_vertex))
+                                G.add_vertex(new_vertex)
+
+                            # user pressed on the ui bar
+                            else:
+                                pass
 
                     # update the last time the user pressed the screen as the current time
                     # used for checking if the user double clicked
@@ -191,10 +223,10 @@ def main():
                 # handling screen movement (technicly we move the objects on the screen)
                 elif event.key is pygame.K_w:
                     for v in verteciesObjects:
-                        v.position = (v.position[0], v.position[1] - MOVEMENT_SHIFT)
+                        v.position = (v.position[0], v.position[1] + MOVEMENT_SHIFT)
                 elif event.key is pygame.K_s:
                     for v in verteciesObjects:
-                        v.position = (v.position[0], v.position[1] + MOVEMENT_SHIFT)
+                        v.position = (v.position[0], v.position[1] - MOVEMENT_SHIFT)
                 elif event.key is pygame.K_a:
                     for v in verteciesObjects:
                         v.position = (v.position[0] - MOVEMENT_SHIFT, v.position[1])
@@ -225,6 +257,19 @@ def main():
                     img = font.render(v.vertexInfo.key, True, VERTEX_KEY_TEXT_COLOR)    
                     main_window.blit(img, (v.position[0] - 12.5, v.position[1] - 12.5)) 
 
+            # drawing the user interface
+
+            # draw ui bar
+            pygame.draw.rect(main_window, UI_BAR_COLOR, (0, 0, MAIN_WINDOW_WIDTH, UI_BAR_HEIGHT))
+
+            # draw all the buttons
+            for o in uiObjects:
+                pygame.draw.rect(main_window, o.color, o.position)
+                img = font.render(o.text, True, UI_BUTTON_TEXT_COLOR)    
+                main_window.blit(img, (o.position[0] + UI_BUTTON_TEXT_RIGHT_SHIFT, o.position[1] + UI_BUTTON_TEXT_DOWN_SHIFT)) 
+                # reset button color, needed in case it was pressed and its color was changed
+                o.color = UI_BUTTON_COLOR_NOT_PRESSED
+
             # ---------- End of rendering ---------- #
                 
             pygame.display.update()
@@ -235,4 +280,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-  

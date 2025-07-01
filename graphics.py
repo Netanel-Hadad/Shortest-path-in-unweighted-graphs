@@ -22,3 +22,11 @@ class edgeObject:
     def __init__(self, edgeInfo, color):
         self.edgeInfo = edgeInfo
         self.color = color
+
+class buttonObject:
+
+    # create new button object
+    def __init__(self, newText, newPosition, newColor):
+        self.position = newPosition
+        self.text = newText
+        self.color = newColor
