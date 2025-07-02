@@ -1,4 +1,4 @@
-# Shortest-path-in-unwieghted-graphs
+# Shortest-path-in-unweighted-graphs
 Create an unweighted graph, select a vertex and see the graph's shortest path tree with the selected vertex as its source.
 
 ## Installation
@@ -11,6 +11,12 @@ Create an unweighted graph, select a vertex and see the graph's shortest path tr
   ```
   
 * Run main.py
+
+## Features:
+* Create vertecies on the screen.
+* Connect them with edges.
+* Run shortest path algorithm to see a vertex shortest paths tree.
+* Save and load your graphs.
 
 ## Usage
 * Double left-click to create a new vertex.
