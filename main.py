@@ -6,6 +6,7 @@ Handles all input from the user and draws everything on the screen using the pyg
 
 import graphs
 import graphics
+import files
 import time
 import pygame
 from pygame.locals import *
@@ -141,20 +142,23 @@ def main():
                             # check if pressed on a button
                             if o.position[0] < mouse_position[0] and mouse_position[0] < (o.position[0] + o.position[2]) and o.position[1] < mouse_position[1] and mouse_position[1] < (o.position[1] + o.position[3]):
                                 o.color = UI_BUTTON_COLOR_PRESSED
+                                # reset the current graph
                                 if o.text == "New":
                                     G = graphs.Graph()
                                     verteciesObjects.clear()
                                     edgesObjects.clear()
                                     new_edge_start_vertex = None
                                     new_edge_end_vertex = None
+                                # open save file dialog
                                 elif o.text == "Save":
-                                    pass
+                                    files.saveFile(G, verteciesObjects, edgesObjects)
+                                # open load file dialog
                                 elif o.text == "Load":
-                                    pass
+                                    files.loadSave()
+                                # close the program
                                 elif o.text == "Exit":
                                     running = False
                                 
-
                     # update the last time the user pressed the screen as the current time
                     # used for checking if the user double clicked
                     last_click_time = current_time
