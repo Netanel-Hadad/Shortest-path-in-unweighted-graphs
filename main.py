@@ -135,9 +135,25 @@ def main():
                                 verteciesObjects.append(graphics.vertexObject(VERTEX_CIRCLE_COLOR, (mouse_position), new_vertex))
                                 G.add_vertex(new_vertex)
 
-                            # user pressed on the ui bar
-                            else:
-                                pass
+                    # user pressed on the ui bar
+                    else:
+                         for o in uiObjects:
+                            # check if pressed on a button
+                            if o.position[0] < mouse_position[0] and mouse_position[0] < (o.position[0] + o.position[2]) and o.position[1] < mouse_position[1] and mouse_position[1] < (o.position[1] + o.position[3]):
+                                o.color = UI_BUTTON_COLOR_PRESSED
+                                if o.text == "New":
+                                    G = graphs.Graph()
+                                    verteciesObjects.clear()
+                                    edgesObjects.clear()
+                                    new_edge_start_vertex = None
+                                    new_edge_end_vertex = None
+                                elif o.text == "Save":
+                                    pass
+                                elif o.text == "Load":
+                                    pass
+                                elif o.text == "Exit":
+                                    running = False
+                                
 
                     # update the last time the user pressed the screen as the current time
                     # used for checking if the user double clicked
@@ -169,8 +185,7 @@ def main():
                                 for e in edgesObjects:
                                     if ((e.edgeInfo.start is i.v and e.edgeInfo.end is i.previous) or (e.edgeInfo.end is i.v and e.edgeInfo.start is i.previous)) and i.visited is True:
                                         e.color = EDGE_IN_BFS_COLOR
-
-
+                                        
                 # right mouse click
                 elif event.button == 3:
                     # check if the user pressed on a vertex
@@ -212,16 +227,8 @@ def main():
             
             # user pressed a keyboard key
             elif event.type == pygame.KEYDOWN:
-                # reset the window
-                if event.key is pygame.K_r:
-                    G = graphs.Graph()
-                    verteciesObjects.clear()
-                    edgesObjects.clear()
-                    new_edge_start_vertex = None
-                    new_edge_end_vertex = None
-
                 # handling screen movement (technicly we move the objects on the screen)
-                elif event.key is pygame.K_w:
+                if event.key is pygame.K_w:
                     for v in verteciesObjects:
                         v.position = (v.position[0], v.position[1] + MOVEMENT_SHIFT)
                 elif event.key is pygame.K_s:
