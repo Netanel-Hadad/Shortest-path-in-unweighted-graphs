@@ -16,7 +16,6 @@ Create an unweighted graph, select a vertex and see the graph's shortest path tr
 * Right click on two vertecies to create an edge between them.
 * Middle mouse-click on a vertex to run the algorithm, making selected vertex the source.
 * Press W-A-S-D to move the screen around.
-* Press R to remove all vertecies and edges.
 * Right clicking on a selcted vertex will unselect it.
 
 ## Examples
