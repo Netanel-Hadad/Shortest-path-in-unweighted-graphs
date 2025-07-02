@@ -7,6 +7,7 @@ Create an unweighted graph, select a vertex and see the graph's shortest path tr
 
   ```
   pip install pygame
+  pip install tkinter
   ```
   
 * Run main.py
