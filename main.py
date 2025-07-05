@@ -10,8 +10,7 @@ import files
 import time
 import pygame
 from pygame.locals import *
-import string
-import math
+import utils
 
 TITLE = "Shortest path tree in unweighted graphs"
 MAIN_WINDOW_HEIGHT = 1000 # fixed height
@@ -30,10 +29,6 @@ SAVE_BUTTON_POSITION = (160, 12.5, 125, 50)
 LOAD_BUTTON_POSITION = (307.5, 12.5, 125, 50)
 EXIT_BUTTON_POSITION = (1362.5, 12.5, 125, 50)
 
-VERTEX_CIRCLE_RADIUS = 45
-VERTEX_CIRCLE_COLOR = (0, 0, 0) # currently black
-VERTEX_KEY_TEXT_COLOR = (255, 255, 255) # currently white
-VERTEX_KEY_TEXT_SIZE = 48
 SELECTED_VERTEX_CIRCLE_COLOR = (0, 0, 255) # currently blue
 SOURCE_VERTEX_CIRCLE_COLOR = (255, 204, 0) # currently orange
 VERTEX_IN_BFS_COLOR = (102, 204, 0) # currently green
@@ -59,7 +54,7 @@ def main():
 
     # font info
     sysfont = pygame.font.get_default_font()
-    font = pygame.font.SysFont(None, VERTEX_KEY_TEXT_SIZE) 
+    font = pygame.font.SysFont(None, graphics.VERTEX_KEY_TEXT_SIZE) 
 
     # holds the graph's info
     G = graphs.Graph()
@@ -133,7 +128,7 @@ def main():
                             if pressed_on_vertex == 0:
                                 # create and add a new vertex to the screen
                                 new_vertex = graphs.Vertex(chr(ord('@')+len(verteciesObjects)+1))
-                                verteciesObjects.append(graphics.vertexObject(VERTEX_CIRCLE_COLOR, (mouse_position), new_vertex))
+                                verteciesObjects.append(graphics.vertexObject(graphics.VERTEX_CIRCLE_COLOR, (mouse_position), new_vertex))
                                 G.add_vertex(new_vertex)
 
                     # user pressed on the ui bar
@@ -142,6 +137,7 @@ def main():
                             # check if pressed on a button
                             if o.position[0] < mouse_position[0] and mouse_position[0] < (o.position[0] + o.position[2]) and o.position[1] < mouse_position[1] and mouse_position[1] < (o.position[1] + o.position[3]):
                                 o.color = UI_BUTTON_COLOR_PRESSED
+
                                 # reset the current graph
                                 if o.text == "New":
                                     G = graphs.Graph()
@@ -149,12 +145,32 @@ def main():
                                     edgesObjects.clear()
                                     new_edge_start_vertex = None
                                     new_edge_end_vertex = None
+
                                 # open save file dialog
                                 elif o.text == "Save":
                                     files.saveFile(G, verteciesObjects, edgesObjects)
+                                    
                                 # open load file dialog
                                 elif o.text == "Load":
-                                    files.loadSave()
+                                    result = files.loadSave()
+                                    G.V.clear()
+                                    G.E.clear()
+                                    verteciesObjects.clear() 
+                                    # create the new graph
+                                    for s in result[0]:
+                                        G.add_vertex(graphs.Vertex(s))
+                                    for s in result[1]:
+                                        G.add_edge(graphs.Edge(utils.findVertexByKey(G, s[0]), utils.findVertexByKey(G, s[1])))
+                                    for s in result[2]:
+                                        ve = None
+                                        for v in G.V:
+                                            if v.key == s[2]:
+                                                ve = v
+                                        verteciesObjects.append(graphics.vertexObject(graphics.VERTEX_CIRCLE_COLOR, (s[1][0], s[1][1]), ve))
+                                    edgesObjects.clear()
+                                    for e in G.E:
+                                        edgesObjects.append(graphics.edgeObject(e, EDGE_COLOR))
+
                                 # close the program
                                 elif o.text == "Exit":
                                     running = False
@@ -168,14 +184,14 @@ def main():
 
                     # reset vertecies and edges colors in case user already ran the algorithm
                     for v in verteciesObjects:
-                        v.color = VERTEX_CIRCLE_COLOR
+                        v.color = graphics.VERTEX_CIRCLE_COLOR
                     for e in edgesObjects:
                         e.color = EDGE_COLOR
-                    
+
                     for v in verteciesObjects:
                         distance = pygame.Vector2(v.position).distance_to(pygame.Vector2(mouse_position))
                         # user pressed on an existing vertex, run BFS
-                        if distance < VERTEX_CIRCLE_RADIUS:
+                        if distance < graphics.VERTEX_CIRCLE_RADIUS:
                             v.color = SOURCE_VERTEX_CIRCLE_COLOR
                             result = graphs.BFS(G, v.vertexInfo)
                             # paint vertecies in BFS tree (exept source) in green
@@ -196,7 +212,7 @@ def main():
                     for v in verteciesObjects:
                         distance = pygame.Vector2(v.position).distance_to(pygame.Vector2(mouse_position))
                         # user pressed on an existing vertex
-                        if distance < VERTEX_CIRCLE_RADIUS:
+                        if distance < graphics.VERTEX_CIRCLE_RADIUS:
                             # select vertex as a starting point for a new edge
                             if new_edge_start_vertex is None:
                                 new_edge_start_vertex = v
@@ -209,7 +225,7 @@ def main():
                                 # check if user tries to create an edge from a vertex to himself,
                                 # if so reset the first vertex the user selected
                                 if new_edge_start_vertex is new_edge_end_vertex:
-                                    v.color = VERTEX_CIRCLE_COLOR
+                                    v.color = graphics.VERTEX_CIRCLE_COLOR
                                     new_edge_start_vertex = None
                                     new_edge_end_vertex = None
                                     valid = False
@@ -225,7 +241,7 @@ def main():
                                     new_edge = graphs.Edge(new_edge_start_vertex.vertexInfo, new_edge_end_vertex.vertexInfo)
                                     edgesObjects.append(graphics.edgeObject(new_edge, EDGE_COLOR))
                                     G.add_edge(new_edge)
-                                    new_edge_start_vertex.color = VERTEX_CIRCLE_COLOR
+                                    new_edge_start_vertex.color = graphics.VERTEX_CIRCLE_COLOR
                                     new_edge_start_vertex = None
                                     new_edge_end_vertex = None
             
@@ -263,9 +279,9 @@ def main():
             # draw vertecies on the main window
             for v in verteciesObjects:
                     # draw circle
-                    pygame.draw.circle(main_window, v.color, v.position, VERTEX_CIRCLE_RADIUS)  
+                    pygame.draw.circle(main_window, v.color, v.position, graphics.VERTEX_CIRCLE_RADIUS)  
                     # draw text inside the circle with the vertex key as value
-                    img = font.render(v.vertexInfo.key, True, VERTEX_KEY_TEXT_COLOR)    
+                    img = font.render(v.vertexInfo.key, True, graphics.VERTEX_KEY_TEXT_COLOR)    
                     main_window.blit(img, (v.position[0] - 12.5, v.position[1] - 12.5)) 
 
             # drawing the user interface

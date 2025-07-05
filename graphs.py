@@ -32,7 +32,7 @@ class Vertex:
 # non directed edge from vertex x to vertex y with a
 class Edge:
 
-    # create a new edge with keys for start and end vertices, and a weight
+    # create a new edge with start and end vertices
     def __init__(self, start, end):
         self.start = start
         self.end = end
@@ -105,7 +105,7 @@ def BFS(G, s):
     queue = []
     queue.append(s)
 
-    # BFS loop
+    # BFS loop 
     while queue:
         s = queue.pop(0)
 
