@@ -4,9 +4,6 @@ such as edge, vertex and graph
 Contaions also the BFS algorithm function
 """
 
-import heapq
-import math
-
 # vertex with a unique key
 class Vertex:
     # key is a unique value for identifying the vertex

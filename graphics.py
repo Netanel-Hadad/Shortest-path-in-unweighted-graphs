@@ -2,10 +2,6 @@
 The file contains classes used for rendering the graph
 """
 
-import graphs
-import pygame
-import math
-
 VERTEX_CIRCLE_RADIUS = 45
 VERTEX_CIRCLE_COLOR = (0, 0, 0) # currently black
 VERTEX_KEY_TEXT_COLOR = (255, 255, 255) # currently white
